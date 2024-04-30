@@ -1,24 +1,25 @@
 "use client";
 import React, { useState } from "react";
-import ToDos from "./components/ToDos";
-import Button from "./components/ui/Button";
-import Input from "./components/ui/Input";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import ToDos from "@/components/ToDos";
+import devounceInputValue from "@/utils/debounceInputValue";
 
 export default function Home() {
   const [todo, setTodo] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
 
-  const debounce = (func: (value: string) => void, delay: number) => {
-    let timer: NodeJS.Timeout;
-    return function (value: string) {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        func(value);
-      }, delay);
-    };
-  };
+  // const debounce = (func: (value: string) => void, delay: number) => {
+  //   let timer: NodeJS.Timeout;
+  //   return function (value: string) {
+  //     clearTimeout(timer);
+  //     timer = setTimeout(() => {
+  //       func(value);
+  //     }, delay);
+  //   };
+  // };
 
-  const debouncedValue = debounce((value: string) => {
+  const debouncedValue = devounceInputValue((value: string) => {
     console.log(value);
     setInputValue(value);
   }, 500);
@@ -30,8 +31,8 @@ export default function Home() {
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setTodo((prevTodo) => [...prevTodo, inputValue]);
-    setInputValue("");
     console.log(todo);
+    setInputValue("");
   };
 
   console.log(todo);
@@ -48,12 +49,12 @@ export default function Home() {
           onClick={handleSubmit}
           className="bg-blue-500 text-white h-10 w-20 rounded-md"
         >
-          Submit
+          {inputValue === "" ? "Add" : "Submit"}
         </Button>
       </div>
 
       <div className="container mx-auto flex justify-center">
-        <ToDos values={todo} />
+        <ToDos values={todo} setTodo={setTodo} />
       </div>
     </main>
   );
